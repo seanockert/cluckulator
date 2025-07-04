@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cluckulator-013';
+const CACHE_NAME = 'cluckulator-015';
 const urlsToCache = [
   '/',
   '/index.html',
