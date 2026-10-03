@@ -2,10 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width; initial-scale=1; user-scalable=no; viewport-fit=cover"
-    />
 
     <title>Cluckulator!</title>
     <meta name="description" content="Calculate with a squawk" />
@@ -19,10 +15,6 @@
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
-    <meta
-      name="description"
-      content="Tap the numbers in order. Get a high score!"
-    />
     <link rel="apple-touch-icon" href="icon.png" />
     <link rel="shortcut icon" href="icon.png" />
     <link rel="manifest" href="/manifest.json" />
@@ -31,8 +23,9 @@
       property="og:image"
       content="https://cluckulator.seanockert.com/cover.png"
     />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta
-      name="twitter:card"
+      name="twitter:image"
       content="https://cluckulator.seanockert.com/cover.png"
     />
 
@@ -131,9 +124,14 @@
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       }
 
-      button:hover,
-      button:focus {
+      button:focus-visible {
         transform: scale(1.1) rotate(-3deg);
+      }
+
+      @media (hover: hover) {
+        button:hover {
+          transform: scale(1.1) rotate(-3deg);
+        }
       }
 
       button:active {
@@ -168,6 +166,10 @@
       }
 
       #dial-container {
+        -webkit-user-select: none;
+        overflow: visible;
+        touch-action: none;
+        user-select: none;
         z-index: 1;
       }
 
@@ -179,11 +181,13 @@
         cursor: grabbing;
       }
 
-      .dragging .eye {
+      .dragging .eye,
+      .eyes-closed .eye {
         display: none;
       }
 
-      .dragging .eye-closed {
+      .dragging .eye-closed,
+      .eyes-closed .eye-closed {
         display: block;
       }
 
@@ -209,6 +213,7 @@
       }
 
       .symbols text {
+        -webkit-user-select: none;
         user-select: none;
         fill: #440204;
       }
@@ -285,17 +290,8 @@
         animation: none;
       }
 
-      .feather-1 {
-        bottom: 30%;
-        left: 50%;
-        position: absolute;
-        transform-origin: top center;
-        transform: rotate(30deg) translate3d(-50%, -7rem, 0);
-        width: 5rem;
-      }
-
-      .dragend .feather-1 {
-        animation: feather 1s 0.2s ease-in;
+      .feathers {
+        pointer-events: none;
       }
 
       #dial-container {
@@ -305,6 +301,48 @@
       .dragging #dial-container,
       .dragend #dial-container {
         animation: none;
+      }
+
+      .eye-dizzy {
+        display: none;
+      }
+
+      .eye-dizzy path {
+        animation: spin 0.8s linear infinite;
+        transform-box: fill-box;
+        transform-origin: center;
+      }
+
+      .dizzy .eye,
+      .dizzy .eye-closed {
+        display: none;
+      }
+
+      .dizzy .eye-dizzy {
+        display: block;
+      }
+
+      .dizzy #dial-container {
+        animation: wobble 0.6s ease-in-out infinite;
+      }
+
+      @keyframes wobble {
+        0%,
+        100% {
+          transform: rotate(0);
+        }
+        25% {
+          transform: rotate(calc(var(--dizzy-angle) * -1)) translate3d(-0.25rem, 0, 0);
+        }
+        75% {
+          transform: rotate(var(--dizzy-angle)) translate3d(0.25rem, 0, 0);
+        }
+      }
+
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
       }
 
       @keyframes float {
@@ -345,37 +383,15 @@
         }
       }
 
-      @keyframes feather {
-        30% {
-          transform: rotate(80deg) translate3d(calc(50% - 14rem), 6rem, 0);
-        }
-        70% {
-          transform: rotate(-10deg) translate3d(calc(50% - 12rem), -2rem, 0);
-        }
-        90% {
-          opacity: 0.6;
-          transform: rotate(10deg) translate3d(calc(50% - 10rem), 3rem, 0);
-        }
-        100% {
-          opacity: 0;
-          transform: rotate(10deg) translate3d(calc(50% - 10rem), 3rem, 0);
-        }
-      }
     </style>
   </head>
   <body>
     <div id="history"></div>
-    <div id="display">Spin me</div>
-
-    <svg class="feather-1" fill="none" viewBox="0 0 84 115">
-      <path
-        fill="#fff"
-        d="M.8 86s53 10.5 82 2.5c2.2-.7.8 2.4.4 3.4-.3 1-11.7 53.4-82.8-3-.6-.4-.6-2.9.4-2.9Z"
-      />
-    </svg>
+    <div id="display">Spin me!</div>
 
     <svg id="dial-container" viewBox="0 0 400 400" width="400" height="400">
       <g class="symbols" fill="#fff"></g>
+      <g class="feathers"></g>
 
       <g id="dial" transform-origin="200 200">
         <path
@@ -438,6 +454,24 @@
           ry="14.3"
           transform="matrix(-1 0 0 1 277.6 163.6)"
         />
+        <g
+          class="eye-dizzy"
+          fill="none"
+          stroke="#440204"
+          stroke-linecap="round"
+          stroke-width="4.5"
+        >
+          <g transform="translate(152 148)">
+            <path
+              d="M0 0a6 6 0 0 1 12 0a12 12 0 0 1-24 0a18 18 0 0 1 36 0"
+            />
+          </g>
+          <g transform="translate(236 148)">
+            <path
+              d="M0 0a6 6 0 0 1 12 0a12 12 0 0 1-24 0a18 18 0 0 1 36 0"
+            />
+          </g>
+        </g>
         <g class="eye-closed">
           <path
             fill="#440204"
@@ -565,17 +599,23 @@
     <div class="shadow"></div>
 
     <div class="controls">
-      <button id="ac">AC</button>
-      <button id="back">&laquo;</button>
+      <button id="ac" aria-label="Clear all">AC</button>
+      <button id="back" aria-label="Undo">&laquo;</button>
     </div>
 
     <script>
+      // Haptics
+      !function(t){const n=16,e=184,i=20;function a(t,n){if(n>=1)return[t];if(n<=0)return[];const e=Math.max(1,Math.round(i*n)),a=i-e,o=[];let r=t;for(;r>=i;)o.push(e,a),r-=i;if(r>0){const t=Math.max(1,Math.round(r*n)),e=r-t;o.push(t),e>0&&o.push(e)}return o}let o=0;function r(t){null!==t.rafId&&(cancelAnimationFrame(t.rafId),t.rafId=null),t.patternResolve?.(),t.patternResolve=null}const s="undefined"!=typeof navigator&&"function"==typeof navigator.vibrate;t.WebHaptics={isSupported:s,createHaptics:function(){const t={hapticLabel:null,domInitialized:!1,rafId:null,patternResolve:null};return{isSupported:s,async trigger(i,l){l=l||{};const u=function(t){if("number"==typeof t)return{vibrations:[{duration:t}]};if(Array.isArray(t)){if(0===t.length)return{vibrations:[]};if("number"==typeof t[0]){const n=[];for(let e=0;e<t.length;e+=2){const i=e>0?t[e-1]:0;n.push({...i>0&&{delay:i},duration:t[e]})}return{vibrations:n}}return{vibrations:t.map((t=>({...t})))}}return{vibrations:t.pattern.map((t=>({...t})))}}(i=i||[{duration:25,intensity:.7}]);if(!u)return;const{vibrations:c}=u;if(0===c.length)return;const d=Math.max(0,Math.min(1,l.intensity??.5));for(const t of c)if(t.duration>1e3&&(t.duration=1e3),!Number.isFinite(t.duration)||t.duration<0||void 0!==t.delay&&(!Number.isFinite(t.delay)||t.delay<0))return void console.warn("[web-haptics-js] Invalid vibration values.");if(s&&navigator.vibrate(function(t,n){const e=[];for(const i of t){const t=Math.max(0,Math.min(1,i.intensity??n)),o=i.delay??0;o>0&&(e.length>0&&e.length%2==0?e[e.length-1]+=o:(0===e.length&&e.push(0),e.push(o)));const r=a(i.duration,t);0!==r.length?e.push(...r):e.length>0&&e.length%2==0?e[e.length-1]+=i.duration:i.duration>0&&e.push(0,i.duration)}return e}(c,d)),!s){if(function(t){if(t.domInitialized||"undefined"==typeof document)return;const n="web-haptics-js-"+ ++o,e=document.createElement("label");e.htmlFor=n,e.style.display="none";const i=document.createElement("input");i.type="checkbox",i.setAttribute("switch",""),i.id=n,i.style.display="none",e.appendChild(i),document.body.appendChild(e),t.hapticLabel=e,t.domInitialized=!0}(t),!t.hapticLabel)return;r(t);const i=0===(c[0]?.delay??0);i&&t.hapticLabel.click(),await function(t,i,a,o){return new Promise((r=>{t.patternResolve=r;const s=[];let l=0;for(const t of i){const n=Math.max(0,Math.min(1,t.intensity??a)),e=t.delay??0;e>0&&(l+=e,s.push({end:l,isOn:!1,intensity:0})),l+=t.duration,s.push({end:l,isOn:!0,intensity:n})}const u=l;let c=0,d=-1;const f=i=>{0===c&&(c=i);const a=i-c;if(a>=u)return t.rafId=null,t.patternResolve=null,void r();let l=s[0];for(const t of s)if(a<t.end){l=t;break}if(l.isOn){const a=n+(1-l.intensity)*e;-1===d?(d=i,o||(t.hapticLabel?.click(),o=!0)):i-d>=a&&(t.hapticLabel?.click(),d=i)}t.rafId=requestAnimationFrame(f)};t.rafId=requestAnimationFrame(f)}))}(t,c,d,i)}},cancel(){r(t),s&&navigator.vibrate(0)},destroy(){r(t),t.hapticLabel?.remove(),t.hapticLabel=null,t.domInitialized=!1}}}}}("undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:this);
+
+      const haptics = WebHaptics.createHaptics();
+
       const el = {
         ac: document.getElementById("ac"),
         back: document.getElementById("back"),
         dial: document.getElementById("dial"),
         dialContainer: document.getElementById("dial-container"),
         display: document.getElementById("display"),
+        feathersGroup: document.querySelector(".feathers"),
         history: document.getElementById("history"),
         symbolsGroup: document.querySelector(".symbols"),
       };
@@ -590,27 +630,37 @@
         numbersPerRotation: 100,
         returnTime: 600,
         soundEffect: "effect-cluck.mp3",
+        placeholder: "Spin me!",
+        feathersPerToken: 2,
+        feathersPerResult: 5,
+        maxFeathers: 30,
+        dizzyTurns: 2,
+        maxDizzyTime: 1200,
+        dizzyBlinkTime: 250,
       };
 
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      // The state is always "number, symbol, number". The dial adds one token for each drag.
       const calculator = {
         state: [],
         expressions: [],
-        cumulativeRotation: 0,
-        currentAngle: 0,
-        currentNumber: 0,
-        isDragging: false,
-        isSymbolMode: false,
-        lastAngle: 0,
-        runningTotal: 0,
-        startAngle: 0,
-        stateIndex: 0,
-        soundEffect: null,
-        soundEnabled: false,
-        soundPool: null,
-        isTransitioning: false, // New flag for transition
+        undoStack: [],
+        message: null,
+        drag: null,
       };
 
-      let transitionTimeout = null; // Track transition timeout
+      const timers = {
+        dialReset: null,
+        dizzy: null,
+        dragend: null,
+      };
+
+      const audio = {
+        context: null,
+        data: null,
+        buffer: null,
+      };
 
       const createSymbols = () => {
         config.symbolPositions.forEach(({ angle, symbol, label }) => {
@@ -649,25 +699,6 @@
         });
       };
 
-      const isValidExpression = (state) => {
-        if (state.length < 3 || state.length % 2 === 0) {
-          return false;
-        }
-        return state.every((item, i) =>
-          i % 2 === 0
-            ? typeof item === "number"
-            : typeof item === "string" && "+-*/".includes(item)
-        );
-      };
-
-      const getOperand = (val) => {
-        const num = parseFloat(val);
-        if (isNaN(num)) {
-          throw new Error("Invalid operand");
-        }
-        return num;
-      };
-
       const formatNumber = (num) => {
         const str = num.toString();
         return str.includes(".") && str.split(".")[1].length > 5
@@ -675,336 +706,438 @@
           : num;
       };
 
-      const getAngle = (center, point) => {
-        const dx = point.clientX - center.x;
-        const dy = point.clientY - center.y;
-        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-        return (angle + 90 + 360) % 360;
+      const getLabel = (token) =>
+        typeof token === "number"
+          ? String(token)
+          : config.symbolPositions.find(({ symbol }) => symbol === token).label;
+
+      const expectsSymbol = () =>
+        typeof calculator.state[calculator.state.length - 1] === "number";
+
+      const getAngle = (e) => {
+        const rect = el.dialContainer.getBoundingClientRect();
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
+        return Math.atan2(dy, dx) * (180 / Math.PI) + 90;
       };
+
+      // Return the smallest signed difference between two angles, from -180 to 180.
+      const getAngleDelta = (from, to) => ((((to - from) % 360) + 540) % 360) - 180;
 
       const getNearestSymbol = (angle) => {
+        const normalized = ((angle % 360) + 360) % 360;
         return config.symbolPositions.reduce((nearest, current) => {
-          // Calculate angular distance, handling the 0/360 boundary
-          let currentDiff = Math.abs(current.angle - angle);
-          if (currentDiff > 180) currentDiff = 360 - currentDiff;
-
-          let nearestDiff = Math.abs(nearest.angle - angle);
-          if (nearestDiff > 180) nearestDiff = 360 - nearestDiff;
-
+          const currentDiff = Math.abs(getAngleDelta(current.angle, normalized));
+          const nearestDiff = Math.abs(getAngleDelta(nearest.angle, normalized));
           return currentDiff < nearestDiff ? current : nearest;
-        });
+        }).symbol;
       };
 
-      const calculateExpression = (state) => {
-        if (state.length === 0) {
-          return 0;
+      const calculate = (left, symbol, right) => {
+        if (symbol === "/" && right === 0) {
+          throw new Error("Division by zero");
         }
-
-        const workingState = [...state];
-
-        // First pass: handle multiplication and division
-        for (let i = 0; i < workingState.length; i++) {
-          if (workingState[i] === "*" || workingState[i] === "/") {
-            const left = getOperand(workingState[i - 1]);
-            const right = getOperand(workingState[i + 1]);
-            if (workingState[i] === "/" && right === 0) {
-              throw new Error("Division by zero");
-            }
-            const result = formatNumber(
-              workingState[i] === "*" ? left * right : left / right
-            );
-            workingState.splice(i - 1, 3, result);
-            i -= 2;
-          }
+        const result = {
+          "+": left + right,
+          "-": left - right,
+          "*": left * right,
+          "/": left / right,
+        }[symbol];
+        if (!Number.isFinite(result)) {
+          throw new Error("Too big!");
         }
-
-        // Second pass: handle addition and subtraction
-        for (let i = 0; i < workingState.length; i++) {
-          if (workingState[i] === "+" || workingState[i] === "-") {
-            const left = getOperand(workingState[i - 1]);
-            const right = getOperand(workingState[i + 1]);
-            const result = formatNumber(
-              workingState[i] === "+" ? left + right : left - right
-            );
-            workingState.splice(i - 1, 3, result);
-            i -= 2;
-          }
-        }
-
-        return workingState[0];
+        return formatNumber(result);
       };
 
-      const updateSymbolHighlight = (angle) => {
-        angle = (angle + 360) % 360;
-        const nearest = getNearestSymbol(angle);
-
-        document.querySelectorAll(".symbol").forEach((el, i) => {
-          el.classList.toggle(
+      const updateSymbolHighlight = (symbol) => {
+        el.symbolsGroup.querySelectorAll(".symbol").forEach((g, i) => {
+          g.classList.toggle(
             "active",
-            config.symbolPositions[i].symbol === nearest.symbol
+            config.symbolPositions[i].symbol === symbol
           );
         });
-
-        return nearest.symbol;
       };
 
-      const toggleSymbolMode = () => {
-        if (calculator.isSymbolMode) {
-          el.dialContainer.classList.add("show-symbols");
-        } else {
-          el.dialContainer.classList.remove("show-symbols");
-          el.symbolsGroup.childNodes.forEach((el) => {
-            el.classList.remove("active");
-          });
+      const showSymbols = (isVisible) => {
+        el.dialContainer.classList.toggle("show-symbols", isVisible);
+        if (!isVisible) {
+          updateSymbolHighlight(null);
         }
       };
 
       const renderDisplay = () => {
-        el.display.innerHTML = calculator.state
-          .map((item) => {
-            // Map "*" to "x" for display
-            const displayItem = item === "*" ? "x" : item;
-            return String(displayItem)
-              .split("")
-              .map((char) => `<b>${char}</b>`)
-              .join("");
-          })
-          .join("&nbsp;");
-      };
-
-      const initAudio = () => {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        calculator.audioContext = new AudioContext();
-
-        const loadSound = () => {
-          fetch(config.soundEffect)
-            .then((response) => response.arrayBuffer())
-            .then((arrayBuffer) =>
-              calculator.audioContext.decodeAudioData(arrayBuffer)
-            )
-            .then((audioBuffer) => {
-              calculator.audioBuffer = audioBuffer;
-            })
-            .catch((error) => {
-              console.error("Error loading audio:", error);
-            });
-        };
-
-        const enableAudio = () => {
-          calculator.audioContext.resume().then(() => {
-            if (!calculator.audioBuffer) {
-              loadSound();
-            }
-          });
-          document.removeEventListener("pointerdown", enableAudio);
-          document.removeEventListener("keydown", enableAudio);
-        };
-
-        document.addEventListener("pointerdown", enableAudio);
-        document.addEventListener("keydown", enableAudio);
-        loadSound();
-      };
-
-      const playSound = async () => {
-        if (!calculator.audioBuffer || !calculator.audioContext) {
+        if (calculator.message) {
+          el.display.textContent = calculator.message;
           return;
         }
-        try {
-          // Always resume context before playing (required on iOS/Safari)
-          if (calculator.audioContext.state === "suspended") {
-            await calculator.audioContext.resume();
-          }
-          const source = calculator.audioContext.createBufferSource();
-          source.buffer = calculator.audioBuffer;
-          const gainNode = calculator.audioContext.createGain();
-          gainNode.gain.value = 0.7;
-          source.connect(gainNode);
-          gainNode.connect(calculator.audioContext.destination);
-          source.start(0);
-        } catch (e) {
-          // Optionally log or ignore
-          // console.warn('Audio play failed', e);
+
+        const tokens = [...calculator.state];
+        const { drag } = calculator;
+        if (drag && drag.mode === "number" && drag.value !== null) {
+          tokens.push(drag.value);
         }
+
+        if (tokens.length === 0) {
+          el.display.textContent = config.placeholder;
+          return;
+        }
+
+        el.display.replaceChildren(
+          ...tokens.flatMap((token, i) => {
+            const chars = [...getLabel(token)].map((char) => {
+              const b = document.createElement("b");
+              b.textContent = char;
+              return b;
+            });
+            return i === 0 ? chars : [" ", ...chars];
+          })
+        );
+      };
+
+      const renderHistory = () => {
+        el.history.textContent = calculator.expressions.join(" ... ");
+        el.history.scrollLeft = el.history.scrollWidth;
+      };
+
+      const render = () => {
+        renderDisplay();
+        renderHistory();
+      };
+
+      const saveUndo = () => {
+        calculator.undoStack.push({
+          state: [...calculator.state],
+          expressions: [...calculator.expressions],
+        });
+      };
+
+      // Return true when the token changed the state.
+      const commitToken = (token) => {
+        calculator.message = null;
+
+        if (typeof token !== "number") {
+          saveUndo();
+          calculator.state.push(token);
+          haptics.trigger([
+            { duration: 30, intensity: 0.5 },
+            { delay: 60, duration: 40, intensity: 1 },
+          ]);
+          return true;
+        }
+
+        if (calculator.state.length < 2) {
+          saveUndo();
+          calculator.state.push(token);
+          return true;
+        }
+
+        const [left, symbol] = calculator.state;
+        try {
+          const result = calculate(left, symbol, token);
+          saveUndo();
+          calculator.expressions.push(
+            [left, symbol, token].map(getLabel).join(" ") + ` = ${result}`
+          );
+          calculator.state = [result];
+          haptics.trigger([{ duration: 100, intensity: 0.8 }]);
+          return true;
+        } catch (err) {
+          calculator.message = err.message;
+          return false;
+        }
+      };
+
+      const unlockAudio = () => {
+        if (!audio.context || audio.context.state === "closed") {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          audio.context = new AudioContext();
+          audio.buffer = null;
+        }
+        // iOS can set the state to "interrupted". Only a user gesture can resume it.
+        if (audio.context.state !== "running") {
+          audio.context.resume().catch(() => {});
+        }
+        decodeSound();
+      };
+
+      const decodeSound = () => {
+        if (!audio.context || !audio.data || audio.buffer) {
+          return;
+        }
+        const context = audio.context;
+        // decodeAudioData detaches the buffer, so decode a copy.
+        context
+          .decodeAudioData(audio.data.slice(0))
+          .then((buffer) => {
+            if (audio.context === context) {
+              audio.buffer = buffer;
+            }
+          })
+          .catch((error) => console.error("Error decoding audio:", error));
+      };
+
+      const loadSound = () => {
+        fetch(config.soundEffect)
+          .then((response) => response.arrayBuffer())
+          .then((data) => {
+            audio.data = data;
+            decodeSound();
+          })
+          .catch((error) => console.error("Error loading audio:", error));
+      };
+
+      const random = (min, max) => min + Math.random() * (max - min);
+
+      const playCluck = (pitch, delay) => {
+        const source = audio.context.createBufferSource();
+        source.buffer = audio.buffer;
+        source.playbackRate.value = pitch;
+        const gainNode = audio.context.createGain();
+        gainNode.gain.value = 0.7;
+        source.connect(gainNode);
+        gainNode.connect(audio.context.destination);
+        source.start(audio.context.currentTime + delay);
+      };
+
+      // Call only from a user gesture handler, so that iOS lets the audio play.
+      // Each cluck has a random pitch. A result gets a low cluck, then a high cluck.
+      const playSound = (isResult) => {
+        unlockAudio();
+        if (!audio.buffer) {
+          return;
+        }
+        if (isResult) {
+          playCluck(random(0.85, 0.95), 0);
+          playCluck(random(1.15, 1.3), 0.14);
+        } else {
+          playCluck(random(0.9, 1.12), 0);
+        }
+      };
+
+      // Knock feathers out from behind the chicken. Each feather pops out, floats a little, then fades.
+      const spawnFeathers = (count) => {
+        if (reducedMotion.matches) {
+          return;
+        }
+        const firstSide = Math.random() < 0.5 ? -1 : 1;
+
+        for (let i = 0; i < count; i++) {
+          if (el.feathersGroup.childElementCount >= config.maxFeathers) {
+            return;
+          }
+          const side = i % 2 === 0 ? firstSide : -firstSide;
+          const feather = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          feather.setAttribute("fill", "#fff");
+          feather.setAttribute(
+            "d",
+            "M-40 5C-26-10 10-16 45-6c-6 4-12 6-19 7l3 4c-16 7-38 10-58 6l4-4c-6 0-10-1-15-2Z"
+          );
+
+          const startX = 200 + side * random(80, 110);
+          const startY = 200 + random(-30, 40);
+          const popX = side * random(25, 55);
+          const popY = -random(20, 50);
+          const drift = side * random(15, 45);
+          const sway = random(8, 16);
+          const fall = random(50, 90);
+          const scale = random(0.45, 0.7);
+          const startRotation = random(-30, 30);
+          const popRotation = startRotation + side * random(20, 50);
+
+          const frame = (offset, x, y, rotation, opacity) => ({
+            offset,
+            opacity,
+            easing: "ease-in-out",
+            transform: `translate(${startX + x}px, ${startY + y}px) rotate(${rotation}deg) scale(${side * scale}, ${scale})`,
+          });
+
+          el.feathersGroup.appendChild(feather);
+          const animation = feather.animate(
+            [
+              {
+                ...frame(0, 0, 0, startRotation, 1),
+                easing: "cubic-bezier(0.2, 0.8, 0.3, 1)",
+              },
+              frame(0.25, popX, popY, popRotation, 1),
+              frame(0.55, popX + drift * 0.5 + sway, popY + fall * 0.4, popRotation - side * 20, 0.7),
+              frame(1, popX + drift - sway, popY + fall, popRotation + side * 10, 0),
+            ],
+            {
+              delay: random(0, 120),
+              duration: random(700, 1000),
+              fill: "backwards",
+            }
+          );
+          animation.onfinish = () => feather.remove();
+        }
+      };
+
+      const stopDizzy = () => {
+        clearTimeout(timers.dizzy);
+        document.documentElement.classList.remove("dizzy", "eyes-closed");
+      };
+
+      // Make the chicken dizzy after a long spin. More turns give a bigger wobble for longer.
+      // The eyes stay closed while the dial returns, go dizzy, then close again before they open.
+      const startDizzy = (turns) => {
+        if (turns < config.dizzyTurns || reducedMotion.matches) {
+          return;
+        }
+        const extraTurns = turns - config.dizzyTurns;
+        const root = document.documentElement;
+        root.style.setProperty("--dizzy-angle", `${Math.min(4 + extraTurns * 2, 12)}deg`);
+        stopDizzy();
+        root.classList.add("eyes-closed");
+
+        timers.dizzy = setTimeout(() => {
+          root.classList.replace("eyes-closed", "dizzy");
+          timers.dizzy = setTimeout(() => {
+            root.classList.replace("dizzy", "eyes-closed");
+            timers.dizzy = setTimeout(stopDizzy, config.dizzyBlinkTime);
+          }, Math.min(500 + extraTurns * 200, config.maxDizzyTime));
+        }, config.returnTime);
       };
 
       // Event handlers
       const handleStart = (e) => {
-        if (calculator.isTransitioning && !calculator.isSymbolMode) {
-          if (transitionTimeout) {
-            clearTimeout(transitionTimeout);
-            transitionTimeout = null;
-          }
-          el.dial.style.transition = "none";
-          el.dial.style.transform = "rotate(0deg)";
-          calculator.isSymbolMode = true;
-          toggleSymbolMode();
-          calculator.cumulativeRotation = 0;
-          calculator.currentAngle = 0;
-          calculator.currentNumber = 0;
-          calculator.lastAngle = 0;
-          calculator.isTransitioning = false;
+        if (calculator.drag || !e.isPrimary) {
+          return;
         }
         e.preventDefault();
-        const svg = el.dial.closest("svg");
-        const rect = svg.getBoundingClientRect();
-        const point = e.touches ? e.touches[0] : e;
-        const center = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2,
-        };
 
-        calculator.startAngle =
-          getAngle(center, point) - calculator.currentAngle;
-        calculator.isDragging = true;
-        calculator.stateIndex = calculator.state.length;
-        calculator.isSymbolMode =
-          calculator.state.length > 0 &&
-          typeof calculator.state[calculator.state.length - 1] === "number";
+        clearTimeout(timers.dialReset);
+        stopDizzy();
+        el.dial.style.transition = "none";
+        el.dial.style.transform = "rotate(0deg)";
 
+        const mode = expectsSymbol() ? "symbol" : "number";
+        showSymbols(mode === "symbol");
         document.documentElement.classList.add("dragging");
+
+        try {
+          el.dial.setPointerCapture(e.pointerId);
+        } catch {
+          // The pointer is not active (for example, a synthetic event).
+        }
+
+        calculator.drag = {
+          pointerId: e.pointerId,
+          mode,
+          lastAngle: getAngle(e),
+          rotation: 0,
+          distance: 0,
+          value: null,
+        };
       };
 
       const handleMove = (e) => {
-        if (!calculator.isDragging) {
+        const { drag } = calculator;
+        if (!drag || e.pointerId !== drag.pointerId) {
           return;
         }
 
-        const svg = el.dial.closest("svg");
-        const rect = svg.getBoundingClientRect();
-        const point = e.touches ? e.touches[0] : e;
-        const center = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2,
-        };
+        const angle = getAngle(e);
+        const delta = getAngleDelta(drag.lastAngle, angle);
+        drag.rotation += delta;
+        drag.distance += Math.abs(delta);
+        drag.lastAngle = angle;
 
-        let angle = getAngle(center, point) - calculator.startAngle;
-
-        // Handle angle wrapping
-        if (Math.abs(angle - calculator.lastAngle) > 180) {
-          calculator.cumulativeRotation +=
-            angle < calculator.lastAngle ? 360 : -360;
-        }
-
-        calculator.currentAngle = angle;
-        calculator.lastAngle = angle;
-
-        if (calculator.isSymbolMode) {
-          updateSymbolHighlight(angle);
+        if (drag.mode === "symbol") {
+          drag.value = getNearestSymbol(drag.rotation);
+          updateSymbolHighlight(drag.value);
         } else {
-          // Update number selection
-          const totalRotation = calculator.cumulativeRotation + angle;
-          calculator.currentNumber = Math.floor(
-            (totalRotation / 360) * config.numbersPerRotation
+          drag.value = Math.floor(
+            (drag.rotation / 360) * config.numbersPerRotation
           );
-
-          calculator.state[calculator.stateIndex] = calculator.currentNumber;
+          calculator.message = null;
           renderDisplay();
         }
 
-        el.dial.style.transform = `rotate(${
-          calculator.cumulativeRotation + angle
-        }deg)`;
+        el.dial.style.transform = `rotate(${drag.rotation}deg)`;
       };
 
-      const handleEnd = (e) => {
-        if (
-          !calculator.isDragging ||
-          (!calculator.isSymbolMode && calculator.currentAngle === 0)
-        ) {
-          return;
-        }
-
-        calculator.isDragging = false;
+      const finishDrag = (isCommit) => {
+        const { drag } = calculator;
+        calculator.drag = null;
         document.documentElement.classList.remove("dragging");
+
         el.dial.style.transition = `transform ${config.returnTime}ms cubic-bezier(0.4, 0.0, 0.2, 1)`;
         el.dial.style.transform = "rotate(0deg)";
 
-        window.setTimeout(() => playSound(), 0);
-
-        if (calculator.isSymbolMode) {
-          const finalSymbol = updateSymbolHighlight(calculator.currentAngle);
-          calculator.state.push(finalSymbol);
-          renderDisplay();
-        } else if (calculator.state.length >= 3) {
-          try {
-            const expression = [...calculator.state];
-            if (!isValidExpression(expression)) {
-              el.display.textContent = "Incomplete or invalid expression";
-              return;
-            }
-            const result = calculateExpression(expression);
-            if (
-              typeof result !== "number" ||
-              !isFinite(result) ||
-              isNaN(result)
-            ) {
-              el.display.textContent = "Invalid calculation";
-              return;
-            }
-            calculator.expressions.push(`${expression.join(" ")} = ${result}`);
-            calculator.runningTotal = result;
-
-            el.history.textContent = calculator.expressions.join(" ... ");
-            el.history.scrollLeft = el.history.scrollWidth;
-            calculator.state.length = 0;
-            calculator.state.push(result);
-
-            renderDisplay();
-          } catch (err) {
-            el.display.textContent = err.message;
-          }
+        const expressionCount = calculator.expressions.length;
+        if (isCommit && drag.value !== null && commitToken(drag.value)) {
+          const isResult = calculator.expressions.length > expressionCount;
+          playSound(isResult);
+          spawnFeathers(
+            isResult ? config.feathersPerResult : config.feathersPerToken
+          );
+          document.documentElement.classList.add("dragend");
+          clearTimeout(timers.dragend);
+          timers.dragend = setTimeout(() => {
+            document.documentElement.classList.remove("dragend");
+          }, 1400);
         }
+        render();
+        startDizzy(drag.distance / 360);
 
-        document.documentElement.classList.add("dragend");
-
-        calculator.isTransitioning = true;
-        transitionTimeout = setTimeout(() => {
+        timers.dialReset = setTimeout(() => {
           el.dial.style.transition = "none";
-          calculator.isSymbolMode = !calculator.isSymbolMode;
-          toggleSymbolMode();
-          calculator.cumulativeRotation = 0;
-          calculator.currentAngle = 0;
-          calculator.currentNumber = 0;
-          calculator.lastAngle = 0;
-          calculator.isTransitioning = false;
+          showSymbols(expectsSymbol());
         }, config.returnTime);
+      };
 
-        setTimeout(() => {
-          document.documentElement.classList.remove("dragend");
-        }, 1400);
+      const handleEnd = (e) => {
+        if (calculator.drag && e.pointerId === calculator.drag.pointerId) {
+          finishDrag(true);
+        }
+      };
+
+      const handleCancel = (e) => {
+        if (calculator.drag && e.pointerId === calculator.drag.pointerId) {
+          finishDrag(false);
+        }
       };
 
       const clear = () => {
-        calculator.state.length = 0;
-        calculator.runningTotal = 0;
+        if (calculator.drag) {
+          finishDrag(false);
+        }
+        calculator.state = [];
         calculator.expressions = [];
-        calculator.isSymbolMode = false;
-        toggleSymbolMode();
-        el.display.textContent = "Spin me";
-        el.history.textContent = "";
+        calculator.undoStack = [];
+        calculator.message = null;
+        showSymbols(false);
+        render();
       };
 
       const back = () => {
-        if (!calculator.isSymbolMode) {
-          calculator.expressions.pop();
+        if (calculator.drag) {
+          finishDrag(false);
         }
-
-        calculator.state.pop();
-        calculator.isSymbolMode = !calculator.isSymbolMode;
-        toggleSymbolMode();
-        el.display.textContent =
-          calculator.state.length > 0 ? calculator.state.join(" ") : "0";
-        el.history.textContent = calculator.expressions.join(" » ");
+        const previous = calculator.undoStack.pop();
+        if (previous) {
+          calculator.state = previous.state;
+          calculator.expressions = previous.expressions;
+        }
+        calculator.message = null;
+        showSymbols(expectsSymbol());
+        render();
       };
 
-      const init = async () => {
+      const init = () => {
         el.ac.addEventListener("click", clear);
         el.back.addEventListener("click", back);
         el.dial.addEventListener("pointerdown", handleStart);
         document.addEventListener("pointermove", handleMove);
         document.addEventListener("pointerup", handleEnd);
+        document.addEventListener("pointercancel", handleCancel);
+        el.dial.addEventListener("lostpointercapture", handleCancel);
+        // Keep these listeners, because iOS can interrupt the audio at any time.
+        document.addEventListener("pointerup", unlockAudio, true);
+        document.addEventListener("keydown", unlockAudio, true);
         createSymbols();
-        await initAudio();
+        loadSound();
+        render();
       };
 
       init();
